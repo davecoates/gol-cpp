@@ -1,6 +1,8 @@
 #ifndef __RLE_H_
 #define __RLE_H_
 
-int read_pattern_file();
+#include <string>
+
+int read_pattern_file(std::string fname);
 
 #endif // __RLE_H_

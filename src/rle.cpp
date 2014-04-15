@@ -22,7 +22,10 @@ struct Header
     string          value;
 };
 
-shared_ptr<Header> parse_comment(const string &line, int number) 
+/**
+ * Parse a comment string
+ */
+shared_ptr<Header> parse_header(const string &line, int number) 
 {
     shared_ptr<Header> comment(new Header());
     comment->line_number = number;
@@ -62,7 +65,7 @@ shared_ptr<Header> parse_comment(const string &line, int number)
 }
 
 
-int read_pattern_file()
+int read_pattern_file(string fname)
 {
     string line;
     vector<string> lines, comments;
@@ -70,8 +73,8 @@ int read_pattern_file()
     char first;
     bool is_header = true, is_data = false;
     int line_number = 1;
-    shared_ptr<Header> comment;
-    ifstream f ("glider.rle");
+    shared_ptr<Header> header;
+    ifstream f (fname);
     if (f.is_open()) {
         while (getline(f, line)) {
             first = line[0];
@@ -83,9 +86,9 @@ int read_pattern_file()
                         if (!is_header) {
                             throw InvalidRleException("Header lines must precede rule and data");
                         }
-                        comment = parse_comment(line, line_number);
-                        if (comment->type == HeaderType::name) {
-                            cout << "Header: " << comment->line_number << " " << comment->value << '\n';
+                        header = parse_header(line, line_number);
+                        if (header->type == HeaderType::name) {
+                            cout << "Header: " << header->line_number << " " << header->value << '\n';
                         }
                         break;
                     case 'x':
