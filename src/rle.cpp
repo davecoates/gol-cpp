@@ -114,6 +114,12 @@ std::ostream& operator<<(std::ostream& s, const Pattern &pattern) {
     for (auto header : pattern.headers) {
         cout << header->type << ": " << header->value << '\n';
     }
+
+    cout << "Seed: ";
+    for (auto cell : pattern.seed_cells) {
+        cout << '[' << cell->x << " " << cell->y << "] ";
+    }
+
     return s;
 }
 
@@ -150,9 +156,56 @@ shared_ptr<Rule> parse_rule(const string &line)
     return rule;
 }
 
+vector<shared_ptr<Cell>>  parse_data(const string data) 
+{
+    uint rl = 0, y = 0, x = 0, ascii_c;
+
+    vector<shared_ptr<Cell> > live_cells;
+
+    for (auto c : data) {
+        if (c == ' ') continue;
+
+        if (c == '$') {
+            y++;
+            x = 0;
+            continue;
+        }
+
+        ascii_c = (int)c;
+
+        if (ascii_c >= 48 && ascii_c <= 57) {
+            // Move to next digit
+            rl = rl * 10 + (c - '0');
+        } else {
+            if (rl == 0) {
+                rl = 1;
+            }
+            // Now we could track the cell state here but we are opting to just
+            // record live cells only. We are assuming there's only ever two
+            // states.
+            if (c == 'o') {
+                for (uint i = x; i < (x + rl); i++) {
+                    shared_ptr<Cell> cell(new Cell());
+                    cell->x = i;
+                    cell->y = y;
+                    live_cells.push_back(cell);
+                }
+            } 
+
+            x += rl;
+
+            rl = 0;
+        }
+
+        if (c == '!') break;
+    }
+
+    return live_cells;
+}
+
 shared_ptr<Pattern> read_pattern_file(const std::string fname)
 {
-    string line;
+    string line, data;
     vector<string> lines;
     vector<shared_ptr<Header>> headers;
 
@@ -166,7 +219,7 @@ shared_ptr<Pattern> read_pattern_file(const std::string fname)
         while (getline(f, line)) {
             first = line[0];
             if (is_data) {
-                cout << line << '\n';
+                data.append(line);
             } else {
                 switch (first) {
                     case '#':
@@ -192,5 +245,6 @@ shared_ptr<Pattern> read_pattern_file(const std::string fname)
     } else {
         throw InvalidRleException("Unable to open file");
     }
-    return shared_ptr<Pattern>(new Pattern(rule, headers));
+    vector<shared_ptr<Cell>> live_cells = parse_data(data);
+    return shared_ptr<Pattern>(new Pattern(rule, headers, live_cells));
 }

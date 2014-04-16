@@ -65,20 +65,29 @@ struct Header
 };
 
 
+
+struct Cell {
+    int x, y;
+};
+
+
 class Pattern
 {
     private:
         std::shared_ptr<Rule> rule;
         std::vector<std::shared_ptr<Header> > headers;
-        // TODO: initial pattern
+        std::vector<std::shared_ptr<Cell> > seed_cells;
         
         friend std::ostream& operator<<(std::ostream&, const Pattern&);
         
     public:
         Pattern(std::shared_ptr<Rule> r,
-                std::vector<std::shared_ptr<Header> > h) {
+                std::vector<std::shared_ptr<Header> > h,
+                std::vector<std::shared_ptr<Cell> > cells
+                ) {
             rule = r;
             headers = h;
+            seed_cells = cells;
         }
 
         
