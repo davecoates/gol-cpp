@@ -38,25 +38,6 @@ class Rule
 
 enum struct HeaderType { unknown, comment, name, origin, rule, coord };
 
-std::ostream& operator<<(std::ostream& out, const HeaderType value){
-    std::string s;
-    switch(value){
-        case HeaderType::comment:
-            s = "Comment";
-            break;
-        case HeaderType::name:
-            s = "Name";
-            break;
-        case HeaderType::origin:
-            s = "Origin";
-            break;
-        default:
-            s = "Unknown";
-            break;
-    }
-    return out << s;
-} 
-
 struct Header
 {
     int             line_number;

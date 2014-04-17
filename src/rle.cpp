@@ -8,6 +8,25 @@
 
 using namespace std;
 
+std::ostream& operator<<(std::ostream& out, const HeaderType value){
+    std::string s;
+    switch(value){
+        case HeaderType::comment:
+            s = "Comment";
+            break;
+        case HeaderType::name:
+            s = "Name";
+            break;
+        case HeaderType::origin:
+            s = "Origin";
+            break;
+        default:
+            s = "Unknown";
+            break;
+    }
+    return out << s;
+} 
+
 
 /**
  * Parse a comment string
