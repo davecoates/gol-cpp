@@ -1,4 +1,4 @@
-SRCS = main.cpp rle.cpp
+SRCS = main.cpp rle.cpp gol.cpp
 OBJS = $(SRCS:%.cpp=../obj/%.o)
 LDFLAGS =-lsfml-graphics -lsfml-window -lsfml-system
 CXXFLAGS = -c -Wall -std=c++11

@@ -175,11 +175,11 @@ shared_ptr<Rule> parse_rule(const string &line)
     return rule;
 }
 
-vector<shared_ptr<Cell>>  parse_data(const string data) 
+vector<shared_ptr<Position>>  parse_data(const string data) 
 {
     uint rl = 0, y = 0, x = 0, ascii_c;
 
-    vector<shared_ptr<Cell> > live_cells;
+    vector<shared_ptr<Position> > live_cells;
 
     for (auto c : data) {
         if (c == ' ') continue;
@@ -204,7 +204,7 @@ vector<shared_ptr<Cell>>  parse_data(const string data)
             // states.
             if (c == 'o') {
                 for (uint i = x; i < (x + rl); i++) {
-                    shared_ptr<Cell> cell(new Cell());
+                    shared_ptr<Position> cell(new Position());
                     cell->x = i;
                     cell->y = y;
                     live_cells.push_back(cell);
@@ -264,6 +264,6 @@ shared_ptr<Pattern> read_pattern_file(const std::string fname)
     } else {
         throw InvalidRleException("Unable to open file");
     }
-    vector<shared_ptr<Cell>> live_cells = parse_data(data);
-    return shared_ptr<Pattern>(new Pattern(rule, headers, live_cells));
+    vector<shared_ptr<Position>> seed_positions = parse_data(data);
+    return shared_ptr<Pattern>(new Pattern(rule, headers, seed_positions));
 }
